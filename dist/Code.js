@@ -1,8 +1,63 @@
+let crossData;
+
+/**
+ * Hooks
+ */
+
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("Crossword")
     .addItem("Add Guardian Crossword", "showPrompt")
     .addToUi();
+}
+
+function onEdit(e) {
+  const range = e.range;
+}
+
+function showPrompt() {
+  var ui = SpreadsheetApp.getUi();
+
+  var result = ui.prompt(
+    "Input the URL of the crossword you want to convert:",
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  // Process the user's response.
+  var button = result.getSelectedButton();
+  var text = result.getResponseText();
+  if (button === ui.Button.OK) {
+    try {
+      const data = loadCrossword(text);
+      addToSheet(data);
+      // Store data for future hooks
+      crossData = data;
+    } catch (e) {
+      ui.alert("Crossword creation failed", e.message, ui.ButtonSet.OK);
+    }
+  }
+}
+
+function addToSheet(crossData) {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = spreadsheet.getActiveSheet();
+  spreadsheet.setName(crossData.name);
+  ss.setName(crossData.name);
+
+  const crossRange = ss.getRange(
+    1,
+    1,
+    crossData.dimensions.rows,
+    crossData.dimensions.cols
+  );
+
+  formatCrosswordArea(ss, crossData.dimensions.rows, crossData.dimensions.cols);
+
+  [acrossClues, downClues] = insertClueSquares(ss, crossData.entries);
+
+  // Build the clue text
+  insertClueText(ss, acrossClues, 1, 1 + crossData.dimensions.cols, "Across");
+  insertClueText(ss, downClues, 1, 2 + crossData.dimensions.cols, "Down");
 }
 
 function loadCrossword(url) {
@@ -31,6 +86,24 @@ function formatCrosswordArea(ss, rows, cols) {
   ss.getRange(1, cols, rows, 1).setBorder(null, null, null, true, null, null);
 }
 
+function rangeFromClue(ss, clue) {
+  if (clue.direction === "across") {
+    return ss.getRange(
+      clue.position.y + 1,
+      clue.position.x + 1,
+      1,
+      clue.length
+    );
+  } else {
+    return ss.getRange(
+      clue.position.y + 1,
+      clue.position.x + 1,
+      clue.length,
+      1
+    );
+  }
+}
+
 function insertClueSquares(ss, entries) {
   // Keep track of clues for creating the clue text
   const downClues = [];
@@ -38,25 +111,12 @@ function insertClueSquares(ss, entries) {
 
   // Insert the crossword clues in the text
   for (let entry of entries) {
-    let entryRange;
-    let firstCell;
+    let entryRange = rangeFromClue(ss, entry);
+    let firstCell = entryRange.getCell(1, 1);
+
     if (entry.direction === "across") {
-      firstCell = ss.getRange(entry.position.y + 1, entry.position.x + 1, 1, 1);
-      entryRange = ss.getRange(
-        entry.position.y + 1,
-        entry.position.x + 1,
-        1,
-        entry.length
-      );
       acrossClues.push(entry);
     } else {
-      firstCell = ss.getRange(entry.position.y + 1, entry.position.x + 1, 1, 1);
-      entryRange = ss.getRange(
-        entry.position.y + 1,
-        entry.position.x + 1,
-        entry.length,
-        1
-      );
       downClues.push(entry);
     }
 
@@ -81,54 +141,31 @@ function insertClueText(ss, clues, startRow, startColumn, title) {
   let clueX = startColumn;
   let clueY = startRow;
 
+  const rules = sheet.getConditionalFormatRules();
+
+  // Make the title row
   ss.getRange(clueY++, clueX)
     .setValue(title)
     .setFontWeight("bold");
+
+  // Make the clue rows
   for (let entry of clues) {
-    ss.getRange(clueY++, clueX).setValue(entry.number + ": " + entry.clue);
+    let clueTextRange = ss.getRange(clueY++, clueX);
+    let clueSquareRange = rangeFromClue(ss, entry);
+
+    // Add the auto-update rule
+    rules.push(
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenFormulaSatisfied(
+          `COUNTBLANK(${clueSquareRange.getA1Notation()}) > 0`
+        )
+        .setStrikethrough(true)
+        .setRanges([clueTextRange])
+        .build()
+    );
+
+    clueTextRange.setValue(entry.number + ": " + entry.clue);
   }
+  sheet.setConditionalFormatRules(rules);
   ss.autoResizeColumn(clueX);
-}
-
-function addToSheet(crossData) {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  const ss = spreadsheet.getActiveSheet();
-  spreadsheet.setName(crossData.name);
-  ss.setName(crossData.name);
-
-  const crossRange = ss.getRange(
-    1,
-    1,
-    crossData.dimensions.rows,
-    crossData.dimensions.cols
-  );
-
-  formatCrosswordArea(ss, crossData.dimensions.rows, crossData.dimensions.cols);
-
-  [acrossClues, downClues] = insertClueSquares(ss, crossData.entries);
-
-  // Build the clue text
-  insertClueText(ss, acrossClues, 1, 1 + crossData.dimensions.cols, "Across");
-  insertClueText(ss, downClues, 1, 2 + crossData.dimensions.cols, "Down");
-}
-
-function showPrompt() {
-  var ui = SpreadsheetApp.getUi();
-
-  var result = ui.prompt(
-    "Input the URL of the crossword you want to convert:",
-    ui.ButtonSet.OK_CANCEL
-  );
-
-  // Process the user's response.
-  var button = result.getSelectedButton();
-  var text = result.getResponseText();
-  if (button === ui.Button.OK) {
-    try {
-      const data = loadCrossword(text);
-      addToSheet(data);
-    } catch (e) {
-      ui.alert("Crossword creation failed", e.message, ui.ButtonSet.OK);
-    }
-  }
 }
