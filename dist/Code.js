@@ -141,7 +141,7 @@ function insertClueText(ss, clues, startRow, startColumn, title) {
   let clueX = startColumn;
   let clueY = startRow;
 
-  const rules = sheet.getConditionalFormatRules();
+  const rules = ss.getConditionalFormatRules();
 
   // Make the title row
   ss.getRange(clueY++, clueX)
@@ -157,7 +157,7 @@ function insertClueText(ss, clues, startRow, startColumn, title) {
     rules.push(
       SpreadsheetApp.newConditionalFormatRule()
         .whenFormulaSatisfied(
-          `COUNTBLANK(${clueSquareRange.getA1Notation()}) > 0`
+          `= COUNTBLANK(${clueSquareRange.getA1Notation()}) = 0`
         )
         .setStrikethrough(true)
         .setRanges([clueTextRange])
@@ -166,6 +166,6 @@ function insertClueText(ss, clues, startRow, startColumn, title) {
 
     clueTextRange.setValue(entry.number + ": " + entry.clue);
   }
-  sheet.setConditionalFormatRules(rules);
+  ss.setConditionalFormatRules(rules);
   ss.autoResizeColumn(clueX);
 }
