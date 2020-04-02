@@ -1,0 +1,30 @@
+{
+  "name": "sheets-crossword",
+  "version": "1.0.0",
+  "description": "This is a plugin for completing crosswords from the Guardian newspaper collaboratively using Google Sheets",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode=development",
+    "push": "cd dist && clasp push",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TMiguelT/SheetsCrossword.git"
+  },
+  "author": "",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/TMiguelT/SheetsCrossword/issues"
+  },
+  "homepage": "https://github.com/TMiguelT/SheetsCrossword#readme",
+  "dependencies": {
+    "@types/cheerio": "^0.22.17",
+    "@types/google-apps-script": "^1.0.11",
+    "gas-webpack-plugin": "^1.0.2",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}

@@ -1,73 +1,32 @@
-let crossData;
+import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
+import { Clue, ClueDirection, CrosswordPuzzle } from "./crosswordPuzzle";
 
-/**
- * Hooks
- */
-
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu("Crossword")
-    .addItem("Add Guardian Crossword", "showPrompt")
-    .addToUi();
-}
-
-function onEdit(e) {
-  const range = e.range;
-}
-
-function showPrompt() {
-  var ui = SpreadsheetApp.getUi();
-
-  var result = ui.prompt(
-    "Input the URL of the crossword you want to convert:",
-    ui.ButtonSet.OK_CANCEL
-  );
-
-  // Process the user's response.
-  var button = result.getSelectedButton();
-  var text = result.getResponseText();
-  if (button === ui.Button.OK) {
-    try {
-      const data = loadCrossword(text);
-      addToSheet(data);
-      // Store data for future hooks
-      crossData = data;
-    } catch (e) {
-      ui.alert("Crossword creation failed", e.message, ui.ButtonSet.OK);
-    }
-  }
-}
-
-function addToSheet(crossData) {
+export function generateCrossword(puzzle: CrosswordPuzzle) {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   const ss = spreadsheet.getActiveSheet();
-  spreadsheet.setName(crossData.name);
-  ss.setName(crossData.name);
 
+  // Name the crossword
+  spreadsheet.setName(puzzle.name);
+  ss.setName(puzzle.name);
+
+  // Get the wider range
   const crossRange = ss.getRange(
     1,
     1,
-    crossData.dimensions.rows,
-    crossData.dimensions.cols
+    puzzle.dimensions.rows,
+    puzzle.dimensions.cols
   );
 
-  formatCrosswordArea(ss, crossData.dimensions.rows, crossData.dimensions.cols);
+  formatCrosswordArea(ss, puzzle.dimensions.rows, puzzle.dimensions.cols);
 
-  [acrossClues, downClues] = insertClueSquares(ss, crossData.entries);
+  const [acrossClues, downClues] = insertClueSquares(ss, puzzle.clues);
 
   // Build the clue text
-  insertClueText(ss, acrossClues, 1, 1 + crossData.dimensions.cols, "Across");
-  insertClueText(ss, downClues, 1, 2 + crossData.dimensions.cols, "Down");
+  insertClueText(ss, acrossClues, 1, 1 + puzzle.dimensions.cols, "Across");
+  insertClueText(ss, downClues, 1, 2 + puzzle.dimensions.cols, "Down");
 }
 
-function loadCrossword(url) {
-  var response = UrlFetchApp.fetch(url).getContentText();
-  const $ = Cheerio.load(response);
-  const attr = $(".js-crossword").attr("data-crossword-data");
-  return JSON.parse(attr);
-}
-
-function formatCrosswordArea(ss, rows, cols) {
+function formatCrosswordArea(ss: Sheet, rows: number, cols: number) {
   const crossRange = ss.getRange(1, 1, cols, rows);
   // Resize the crossword
   ss.setColumnWidths(1, cols, 50);
@@ -86,25 +45,25 @@ function formatCrosswordArea(ss, rows, cols) {
   ss.getRange(1, cols, rows, 1).setBorder(null, null, null, true, null, null);
 }
 
-function rangeFromClue(ss, clue) {
-  if (clue.direction === "across") {
+function rangeFromClue(ss: Sheet, clue: Clue) {
+  if (clue.direction === ClueDirection.ACROSS) {
     return ss.getRange(
-      clue.position.y + 1,
-      clue.position.x + 1,
+      clue.start.row + 1,
+      clue.start.column + 1,
       1,
-      clue.length
+      clue.text.length
     );
   } else {
     return ss.getRange(
-      clue.position.y + 1,
-      clue.position.x + 1,
-      clue.length,
+      clue.start.row + 1,
+      clue.start.column + 1,
+      clue.text.length,
       1
     );
   }
 }
 
-function insertClueSquares(ss, entries) {
+function insertClueSquares(ss: Sheet, entries: Clue[]) {
   // Keep track of clues for creating the clue text
   const downClues = [];
   const acrossClues = [];
@@ -114,7 +73,7 @@ function insertClueSquares(ss, entries) {
     let entryRange = rangeFromClue(ss, entry);
     let firstCell = entryRange.getCell(1, 1);
 
-    if (entry.direction === "across") {
+    if (entry.direction === ClueDirection.ACROSS) {
       acrossClues.push(entry);
     } else {
       downClues.push(entry);
@@ -123,7 +82,7 @@ function insertClueSquares(ss, entries) {
     // We have to combine the previous note and the current note in case this is both a
     // down and across clue
     const prevNote = firstCell.getNote();
-    const newNote = entry.number + " " + entry.direction + ": " + entry.clue;
+    const newNote = entry.number + " " + entry.direction + ": " + entry.text;
     let note;
     if (prevNote.length > 0) note = prevNote + "\n\n" + newNote;
     else note = newNote;
@@ -137,7 +96,13 @@ function insertClueSquares(ss, entries) {
   return [acrossClues, downClues];
 }
 
-function insertClueText(ss, clues, startRow, startColumn, title) {
+function insertClueText(
+  ss: Sheet,
+  clues: Clue[],
+  startRow: number,
+  startColumn: number,
+  title: string
+) {
   let clueX = startColumn;
   let clueY = startRow;
 
@@ -164,7 +129,7 @@ function insertClueText(ss, clues, startRow, startColumn, title) {
         .build()
     );
 
-    clueTextRange.setValue(entry.number + ": " + entry.clue);
+    clueTextRange.setValue(entry.number + ": " + entry.text);
   }
   ss.setConditionalFormatRules(rules);
   ss.autoResizeColumn(clueX);
