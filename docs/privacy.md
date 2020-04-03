@@ -1,6 +1,6 @@
 ---
-id: privacy
 title: "Privacy Policy"
+layout: page
 ---
 
 ## Privacy Policy
