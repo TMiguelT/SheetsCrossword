@@ -1,7 +1,7 @@
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 import { Clue, ClueDirection, CrosswordPuzzle } from "./crosswordPuzzle";
 
-export function generateCrossword(puzzle: CrosswordPuzzle) {
+export default function generateCrossword(puzzle: CrosswordPuzzle) {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   const ss = spreadsheet.getActiveSheet();
 
@@ -51,13 +51,13 @@ function rangeFromClue(ss: Sheet, clue: Clue) {
       clue.start.row + 1,
       clue.start.column + 1,
       1,
-      clue.text.length
+      clue.length
     );
   } else {
     return ss.getRange(
       clue.start.row + 1,
       clue.start.column + 1,
-      clue.text.length,
+      clue.length,
       1
     );
   }

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode=development",
     "push": "cd dist && clasp push",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch --mode=development"
   },
   "repository": {
     "type": "git",

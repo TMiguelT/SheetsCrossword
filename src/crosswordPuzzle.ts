@@ -21,6 +21,7 @@ export interface Clue {
   direction: ClueDirection;
   text: string;
   start: CrosswordPosition;
+  length: number;
   answer: string;
   number: number;
 }

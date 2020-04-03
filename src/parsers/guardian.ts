@@ -1,38 +1,34 @@
-import { CrosswordPuzzle } from "../crosswordPuzzle";
+import { ClueDirection, CrosswordPuzzle } from "../crosswordPuzzle";
+import generateCrossword from "../generate";
+import CrosswordParser from "./parser";
 
 declare global {
   const Cheerio: CheerioAPI;
 }
 
-import CrosswordParser from "./parser";
-
 function loadCrossword(url: string) {
   const response = UrlFetchApp.fetch(url).getContentText();
-  if (process.env.NODE_ENV !== "production") {
-    console.log(response);
-  }
   const $ = Cheerio.load(response);
   const attr = $(".js-crossword").attr("data-crossword-data");
   return JSON.parse(attr);
 }
 
-function parse(data: string): CrosswordPuzzle {
+function parse(data: any): CrosswordPuzzle {
   // The guardian format is an HTML page
-  const $ = Cheerio.load(data);
-  const attr = $(".js-crossword").attr("data-crossword-data");
-  const json = JSON.parse(attr);
   return {
-    clues: json.entries.map((entry: any) => ({
-      direction: entry.direction,
+    clues: data.entries.map((entry: any) => ({
+      direction:
+        entry.direction == "across" ? ClueDirection.ACROSS : ClueDirection.DOWN,
       start: {
         column: entry.position.x,
         row: entry.position.y,
       },
       text: entry.clue,
       number: entry.number,
+      length: entry.length,
     })),
-    dimensions: json.dimensions,
-    name: json.name,
+    dimensions: data.dimensions,
+    name: data.name,
   };
 }
 
@@ -50,7 +46,8 @@ global.guardianParserEntry = () => {
   if (button === ui.Button.OK) {
     try {
       const data = loadCrossword(text);
-      return parse(data);
+      const parsed = parse(data);
+      generateCrossword(parsed);
     } catch (e) {
       if (process.env.NODE_ENV === "production") {
         ui.alert("Crossword creation failed", e.message, ui.ButtonSet.OK);
