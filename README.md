@@ -1,3 +1,8 @@
+---
+id: index
+title: "Home"
+---
+
 # SheetsCrossword
 
 This is a plugin for completing crosswords from the Guardian newspaper collaboratively using Google Sheets

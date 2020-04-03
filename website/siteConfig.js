@@ -15,7 +15,7 @@ const siteConfig = {
   url: "https://tmiguelt.github.io", // Your website URL
   baseUrl: "/SheetsCrossword/", // Base URL for your project */
 
-  projectName: "Sheets Crossword",
+  projectName: "SheetsCrossword",
   organizationName: "TMiguelT",
 
   // For no header links in the top nav bar -> headerLinks: [],
