@@ -1,6 +1,7 @@
 .idea
 venv
 dist/*.js
+website/build
 
 # Logs
 logs
