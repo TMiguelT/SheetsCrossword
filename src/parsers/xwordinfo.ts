@@ -2,12 +2,12 @@ import CrosswordParser from "./parser";
 import generateCrossword from "../generate";
 import { Clue, CrosswordPuzzle, ClueDirection } from "../crosswordPuzzle";
 
-function loadCrossword(url: string): CrosswordPuzzle {
+function loadCrossword(url: string): any {
   // We have the HTML URL, we need to find the JSON API URL
   const [base, query] = url.split("?");
   const jsonUrl = "https://www.xwordinfo.com/JSON/TrackData.aspx?" + query;
   const xwordData = UrlFetchApp.fetch(jsonUrl).getContentText();
-  return parse(xwordData);
+  return JSON.parse(xwordData);
 }
 
 export function buildClues(
@@ -78,7 +78,8 @@ global.xwordinfoParserEntry = () => {
   if (button === ui.Button.OK) {
     try {
       const data = loadCrossword(text);
-      generateCrossword(data);
+      const parsed = parse(data);
+      generateCrossword(parsed);
     } catch (e) {
       if (process.env.NODE_ENV === "production") {
         ui.alert("Crossword creation failed", e.message, ui.ButtonSet.OK);
