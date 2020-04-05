@@ -2,4 +2,4 @@
 layout: home
 ---
 
-{% include_relative ../README.md %}
+{% include README.md %}

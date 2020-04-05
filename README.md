@@ -1,5 +1,3 @@
-# SheetsCrossword
-
 Sheets Crossword is a plugin for creating and completing crosswords collaboratively using Google Sheets
 
 Features of Sheets Crossword include:
