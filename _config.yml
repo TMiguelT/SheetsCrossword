@@ -23,6 +23,7 @@ exclude:
   - node_modules
   - dist
   - _site
+  - TODO.md
 
 readme_index:
   enabled: true
