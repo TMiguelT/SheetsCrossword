@@ -13,6 +13,7 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-readme-index
+  - jekyll-default-layout
 
 exclude:
   - src
