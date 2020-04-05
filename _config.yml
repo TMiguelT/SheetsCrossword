@@ -1,0 +1,30 @@
+title: Sheets Crossword
+email: ttmigueltt@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Plugin for completing crosswords collaboratively using Google Sheets
+baseurl: "/SheetsCrossword" # the subpath of your site, e.g. /blog
+url: "https://tmiguelt.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: TMiguelT
+github_username: TMiguelT
+
+markdown: kramdown
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-readme-index
+
+exclude:
+  - src
+  - test
+  - venv
+  - website
+  - node_modules
+  - dist
+  - _site
+
+defaults:
+  - scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "page"

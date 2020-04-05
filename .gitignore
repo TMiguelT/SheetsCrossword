@@ -2,6 +2,8 @@
 venv
 dist/*.js
 website/build
+.jekyll-cache
+_site
 
 # Logs
 logs

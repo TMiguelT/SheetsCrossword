@@ -10,4 +10,3 @@ For more information on how to install, use and develop Sheets Crossword, as wel
 the [official website](https://tmiguelt.github.io/SheetsCrossword/).
 
 ![](media/screenshot.png)
-![](docs/media/screenshot.png)

@@ -1,7 +1,9 @@
 ---
+permalink: /installation
 layout: page
 title: Development
 ---
+
 - Ensure `clasp` is installed. If not, run `npm install @google/clasp -g`
 - Ensure you've logged in to `clasp` and allowed it access to your Google Account: `clasp login`
 - Create a folder for this repo (no we can't clone just yet):
