@@ -1,15 +1,9 @@
 /**
  * This module outlines general classes that define
  */
-
 export interface CrosswordDimensions {
   rows: number;
   cols: number;
-}
-
-export enum ClueDirection {
-  ACROSS,
-  DOWN,
 }
 
 export interface CrosswordPosition {
@@ -30,4 +24,9 @@ export interface CrosswordPuzzle {
   name: string;
   dimensions: CrosswordDimensions;
   clues: Clue[];
+}
+
+export enum ClueDirection {
+  ACROSS,
+  DOWN,
 }

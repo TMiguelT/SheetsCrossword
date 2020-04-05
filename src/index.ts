@@ -2,9 +2,13 @@
  * Location for the entry point function
  */
 import GuardianParser from "./parsers/guardian";
+import XwordinfoParser from "./parsers/xwordinfo";
 import CrosswordParser from "./parsers/parser";
 
-const parsers: CrosswordParser[] = [new GuardianParser()];
+const parsers: CrosswordParser[] = [
+  new GuardianParser(),
+  new XwordinfoParser(),
+];
 
 function onOpen() {
   const menu = SpreadsheetApp.getUi().createAddonMenu();

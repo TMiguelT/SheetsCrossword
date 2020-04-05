@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "This is a plugin for completing crosswords from the Guardian newspaper collaboratively using Google Sheets",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "webpack --mode=development",
     "push": "cd dist && clasp push",
@@ -26,5 +27,19 @@
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-typescript": "^7.9.4",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0",
+    "@babel/register": "^7.9.0",
+    "@types/chai": "^4.2.11",
+    "@types/expect": "^24.3.0",
+    "@types/mocha": "^7.0.2",
+    "chai": "^4.2.0",
+    "mocha": "^7.1.1",
+    "ts-mocha": "^7.0.0",
+    "ts-node": "^8.8.2"
   }
 }

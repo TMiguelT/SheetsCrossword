@@ -13,7 +13,7 @@ function loadCrossword(url: string) {
   return JSON.parse(attr);
 }
 
-function parse(data: any): CrosswordPuzzle {
+export function parse(data: any): CrosswordPuzzle {
   // The guardian format is an HTML page
   return {
     clues: data.entries.map((entry: any) => ({
@@ -26,6 +26,7 @@ function parse(data: any): CrosswordPuzzle {
       text: entry.clue,
       number: entry.number,
       length: entry.length,
+      answer: entry.solution,
     })),
     dimensions: data.dimensions,
     name: data.name,
