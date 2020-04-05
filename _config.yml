@@ -24,6 +24,10 @@ exclude:
   - dist
   - _site
 
+readme_index:
+  enabled: true
+  remove_originals: false
+
 defaults:
   - scope:
       path: "" # an empty string here means all files in the project
