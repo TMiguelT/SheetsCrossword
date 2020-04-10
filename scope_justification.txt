@@ -1,0 +1,3 @@
+The spreadsheets scope is used to edit the current sheet to setup crossword puzzles.
+
+The external_request scope is used to allow importing crosswords from external sources including other websites.
