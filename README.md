@@ -1,5 +1,7 @@
 CrossSheet is a plugin for creating and completing crosswords collaboratively using Google Sheets
 
+You can install CrossSheet for free from the G Suite Marketplace: [**Install**](https://gsuite.google.com/marketplace/app/crosssheet/720278429693)
+
 Features of CrossSheet include:
 
 - Collaborative crossword solving using the powerful Google Sheets platform
