@@ -30,7 +30,7 @@
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
-    "xpuz": "^1.2.1"
+    "xpuz": "github:turnerhayes/xpuz"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

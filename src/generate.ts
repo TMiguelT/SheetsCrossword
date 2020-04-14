@@ -6,7 +6,6 @@ export default function generateCrossword(puzzle: CrosswordPuzzle) {
   const ss = spreadsheet.getActiveSheet();
 
   // Name the crossword
-  spreadsheet.setName(puzzle.name);
   ss.setName(puzzle.name);
 
   // Get the wider range
@@ -82,7 +81,12 @@ function insertClueSquares(ss: Sheet, entries: Clue[]) {
     // We have to combine the previous note and the current note in case this is both a
     // down and across clue
     const prevNote = firstCell.getNote();
-    const newNote = entry.number + " " + entry.direction + ": " + entry.text;
+    const newNote =
+      entry.number +
+      " " +
+      ClueDirection.toString(entry.direction) +
+      ": " +
+      entry.text;
     let note;
     if (prevNote.length > 0) note = prevNote + "\n\n" + newNote;
     else note = newNote;

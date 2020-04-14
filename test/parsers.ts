@@ -52,3 +52,26 @@ describe("guardian parser", () => {
     });
   });
 });
+
+describe("xpuz parser", () => {
+  it("should parse an ipuz crossword", () => {
+    const data = readJson(__dirname + "/example.ipuz");
+    const puzzle = parseGuardian(data);
+
+    assert.equal(puzzle.name, "Quick crossword No 15,568");
+    assert.equal(puzzle.dimensions.rows, 13);
+    assert.equal(puzzle.dimensions.cols, 13);
+    assert.equal(puzzle.clues.length, 26);
+    assert.deepEqual(puzzle.clues[0], {
+      text: "Slit in the back of a jacket (4)",
+      start: {
+        row: 0,
+        column: 0,
+      },
+      direction: 0,
+      answer: "VENT",
+      length: 4,
+      number: 1,
+    });
+  });
+});

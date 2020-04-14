@@ -30,3 +30,13 @@ export enum ClueDirection {
   ACROSS,
   DOWN,
 }
+
+export namespace ClueDirection {
+  export function toString(clue: ClueDirection): string {
+    if (clue == ClueDirection.ACROSS) {
+      return "Across";
+    } else if (clue == ClueDirection.DOWN) {
+      return "Down";
+    }
+  }
+}
